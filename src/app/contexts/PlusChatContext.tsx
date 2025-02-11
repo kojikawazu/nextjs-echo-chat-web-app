@@ -6,8 +6,8 @@ import { UserResource } from '@clerk/types';
 // types
 import { MiniAuthUser } from '@/app/types/auth-users';
 import { ChatRoom } from '@/app/types/types';
-// consts
-import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
+// api
+import { fetchRooms } from '@/app/lib/api/room/fetch-rooms';
 
 interface PlusChatContextType {
     currentUser: UserResource | null | undefined;
@@ -15,6 +15,7 @@ interface PlusChatContextType {
     activeRoom: ChatRoom | null;
     isLoading: boolean;
     joinRoom: (roomId: string) => void;
+    fetcher: () => void;
 }
 
 const convertToMiniAuthUser = (user: UserResource | null | undefined): MiniAuthUser | null => {
@@ -38,31 +39,31 @@ export const PlusChatProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     useEffect(() => {
         if (!isLoaded) return;
-
         // ユーザー情報をセット
         setCurrentUser(user);
-
-        const fetchRooms = async () => {
-            if (currentUser) {
-                try {
-                    const response = await fetch(`${COMMON_CONSTANTS.URL.FETCH_ROOMS}`);
-
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch rooms');
-                    }
-
-                    const data = await response.json();
-                    setRooms(data);
-                } catch (error) {
-                    console.error('Error fetching rooms:', error);
-                } finally {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        fetchRooms();
+        fetcher();
     }, [isLoaded, currentUser]);
+
+    /**
+     * 部屋を取得
+     */
+    const fetcher = async () => {
+        if (currentUser) {
+            try {
+                const responseJson = await fetchRooms();
+                setRooms(responseJson);
+
+                // アクティブな部屋がない場合、最初の部屋をアクティブに設定
+                if (!activeRoom && responseJson.length > 0) {
+                    setActiveRoom(responseJson[0]);
+                }
+            } catch (error) {
+                console.error('Error fetching rooms:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+    };
 
     /**
      * 部屋に参加
@@ -114,7 +115,9 @@ export const PlusChatProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
 
     return (
-        <PlusChatContext.Provider value={{ currentUser, rooms, activeRoom, isLoading, joinRoom }}>
+        <PlusChatContext.Provider
+            value={{ currentUser, rooms, activeRoom, isLoading, joinRoom, fetcher }}
+        >
             {children}
         </PlusChatContext.Provider>
     );

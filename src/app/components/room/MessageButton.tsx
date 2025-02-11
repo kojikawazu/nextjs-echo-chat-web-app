@@ -20,7 +20,9 @@ export const MessageButton: React.FC<MessageButtonProps> = ({ message, isOwn }) 
     const { toggleLike } = useChatContext();
     const { rooms, currentUser } = usePlusChatContext();
 
-    const sender = rooms.flatMap((room: ChatRoom) => room.users).find((user) => user.id === message.user_id);
+    const sender = rooms
+        .flatMap((room: ChatRoom) => room.users)
+        .find((user) => user.id === message.user_id);
     const senderName = sender?.name || '不明なユーザー';
 
     const hasLiked = message.liked_users.some((like) => like.userId === currentUser?.id);
