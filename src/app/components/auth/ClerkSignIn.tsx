@@ -10,19 +10,24 @@ import { useTheme } from 'next-themes';
  */
 export default function ClerkSignIn() {
     const { resolvedTheme } = useTheme();
+    const signInTheme = resolvedTheme === 'dark' ? darkTheme : simpleTheme;
 
     return (
         <div className="flex justify-center items-center">
             <div className="p-8 dark:text-white">
                 <SignIn
                     appearance={{
-                        baseTheme: resolvedTheme === 'dark' ? darkTheme : simpleTheme,
+                        baseTheme: signInTheme,
                         elements: {
-                            signInRoot: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg',
+                            signInRoot:
+                                'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg shadow-lg',
                             card: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100',
-                            socialButtons: 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600',
-                            socialButtonsBlockButton: 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border dark:border-gray-600',
-                            formFieldInput: 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 dark:focus:ring-gray-500',
+                            socialButtons:
+                                'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-600',
+                            socialButtonsBlockButton:
+                                'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border dark:border-gray-600',
+                            formFieldInput:
+                                'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 dark:focus:ring-gray-500',
                             formFieldLabel: 'text-gray-700 dark:text-gray-300',
                             formFieldErrorText: 'text-red-500 dark:text-red-400',
                             formFieldHintText: 'text-gray-500 dark:text-gray-400',
@@ -43,4 +48,3 @@ export default function ClerkSignIn() {
         </div>
     );
 }
-

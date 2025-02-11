@@ -26,3 +26,37 @@ export interface Room {
     messages: Message[];
     users: User[];
 }
+
+// -------------------------------------------------------------------------------------------------
+
+export interface MiniAuthUser {
+    id: string;
+    name: string;
+}
+
+export interface ChatRoom {
+    id: string;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    users: MiniAuthUser[];
+}
+
+export interface RoomUser {
+    name: string;
+    userId: string;
+}
+
+export interface RoomMessage {
+    user_id: string;
+    message_id: string;
+    name: string;
+    content: string;
+    created_at: Date;
+}
+
+export interface MessageLike {
+    name: string;
+    userId: string;
+    createdAt: Date;
+}

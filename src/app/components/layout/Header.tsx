@@ -5,25 +5,19 @@ import { MessageCircle, LogOut, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useUser } from '@clerk/nextjs';
 import { SignedIn } from '@clerk/nextjs';
-import { useClerk } from '@clerk/nextjs'
-// contexts
-import { useChatContext } from '@/app/contexts/ChatContext';
+import { useClerk } from '@clerk/nextjs';
 
 /**
  * ヘッダー
  * @returns JSX.Element
  */
 export const Header: React.FC = () => {
-    // contexts
-    const { currentUser } = useChatContext();
     // theme
     const { theme, setTheme } = useTheme();
     // user
     const { user } = useUser();
     // clerk
     const { signOut } = useClerk();
-
-    console.log(user);
 
     return (
         <header className="bg-white dark:bg-dark-200 shadow-sm transition-colors duration-200">

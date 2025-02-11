@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
 // contexts
 import { ChatProvider } from '@/app/contexts/ChatContext';
+import { PlusChatProvider } from '@/app/contexts/PlusChatContext';
 // styles
 import './globals.css';
 
@@ -24,7 +25,9 @@ export default function RootLayout({
         <html lang="ja">
             <body>
                 <ClerkProvider afterSignOutUrl="/">
-                    <ChatProvider>{children}</ChatProvider>
+                    <PlusChatProvider>
+                        <ChatProvider>{children}</ChatProvider>
+                    </PlusChatProvider>
                 </ClerkProvider>
             </body>
         </html>

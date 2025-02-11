@@ -103,6 +103,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (!currentUser) return;
 
             setRooms((prevRooms) => {
+                // 現在の部屋を更新
                 let updatedRooms = prevRooms.map((room) => {
                     if (room.id === activeRoom?.id) {
                         return {
@@ -113,6 +114,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     return room;
                 });
 
+                // 新しい部屋を追加
                 updatedRooms = updatedRooms.map((room) => {
                     if (room.id === roomId) {
                         const isUserAlreadyJoined = room.users.some((u) => u.id === currentUser.id);
@@ -126,8 +128,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     return room;
                 });
 
+                // 新しい部屋をアクティブに設定
                 const newActiveRoom = updatedRooms.find((r) => r.id === roomId) || null;
+                // アクティブな部屋を更新
                 setActiveRoom(newActiveRoom);
+                // 更新された部屋を返す
                 return updatedRooms;
             });
         },
