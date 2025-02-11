@@ -3,6 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 // consts
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 // types
@@ -10,6 +13,13 @@ import { RoomMessage } from '@/app/types/types';
 // contexts
 import { useChatContext } from '@/app/contexts/ChatContext';
 import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
+// schema
+import {
+    chatMessageCreateSchema,
+    ChatMessageCreateFormValues,
+} from '@/app/schema/chat-message-schema';
+// api
+import { createMessage } from '@/app/lib/api/message/create-message';
 // components
 import { MessageButton } from '@/app/components/room/MessageButton';
 
@@ -25,29 +35,36 @@ export const ChatRoom: React.FC = () => {
     const { sendMessage } = useChatContext();
     const { currentUser, activeRoom, joinRoom } = usePlusChatContext();
     // states
-    const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState<RoomMessage[]>([]);
+    const [isCreating, setIsCreating] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!isLoaded) return;
         if (!activeRoom) return;
+        fetchMessages();
+    }, [isLoaded, activeRoom]);
 
-        const fetchMessages = async () => {
+    const fetchMessages = async () => {
+        if (!activeRoom) return;
+        setIsCreating(true);
+
+        try {
             const response = await fetch(
                 `${COMMON_CONSTANTS.URL.FETCH_MESSAGES.replace(':id', activeRoom.id)}`,
             );
-
             if (!response.ok) {
                 throw new Error('Failed to fetch messages');
             }
 
             const data = await response.json();
             setMessages(data);
-        };
-
-        fetchMessages();
-    }, [isLoaded, activeRoom]);
+        } catch (error) {
+            console.error('Failed to fetch messages:', error);
+        } finally {
+            setIsCreating(false);
+        }
+    };
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,6 +73,41 @@ export const ChatRoom: React.FC = () => {
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
+
+    // フォーム
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<ChatMessageCreateFormValues>({
+        resolver: zodResolver(chatMessageCreateSchema),
+        defaultValues: {
+            message: '',
+            room_id: activeRoom?.id,
+            user_id: currentUser?.id,
+        },
+    });
+
+    // メッセージ作成ハンドラー
+    const handleCreateMessage = (data: ChatMessageCreateFormValues) => {
+        if (data) {
+            createMutation.mutate(data);
+            reset();
+        }
+    };
+
+    // メッセージ作成用のミューテーション
+    const createMutation = useMutation({
+        mutationFn: (createdData: ChatMessageCreateFormValues) => createMessage(createdData),
+        onSuccess: () => {
+            console.log('メッセージ作成成功');
+            fetchMessages();
+        },
+        onError: () => {
+            console.log('メッセージ作成失敗');
+        },
+    });
 
     if (!activeRoom) return null;
 
@@ -85,16 +137,27 @@ export const ChatRoom: React.FC = () => {
                 <div ref={messagesEndRef} />
             </div>
 
-            <form className="p-4 bg-white dark:bg-dark-200 border-t border-gray-200 dark:border-dark-300 transition-colors duration-200">
+            <form
+                className="p-4 bg-white dark:bg-dark-200 border-t border-gray-200 dark:border-dark-300 transition-colors duration-200"
+                onSubmit={handleSubmit(handleCreateMessage)}
+            >
                 <div className="flex space-x-2">
+                    {errors.message && (
+                        <p className="text-red-500 text-sm">{errors.message.message}</p>
+                    )}
                     <input
                         type="text"
+                        id="message"
+                        {...register('message')}
                         className="flex-1 rounded-lg border border-gray-300 dark:border-dark-300 bg-white dark:bg-dark-100 px-4 py-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 transition-colors duration-200"
                         placeholder="メッセージを入力..."
                     />
+                    <input type="hidden" {...register('room_id')} value={activeRoom.id} />
+                    <input type="hidden" {...register('user_id')} value={currentUser?.id} />
                     <button
                         type="submit"
                         className="px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-dark-200 transition-colors duration-200"
+                        disabled={isCreating}
                     >
                         <Send className="h-5 w-5" />
                     </button>

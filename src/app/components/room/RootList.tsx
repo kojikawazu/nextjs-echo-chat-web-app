@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 // contexts
 import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
 // schema
-import { roomCreateSchema, RoomCreateFormValues } from '@/app/schema/room-schema';
+import { roomCreateSchema, RoomCreateFormValues } from '@/app/schema/chat-room-schema';
 // api
 import { createRoom } from '@/app/lib/api/room/create-room';
 /**
