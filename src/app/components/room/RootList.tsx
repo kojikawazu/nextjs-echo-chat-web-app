@@ -13,7 +13,7 @@ export const RoomList: React.FC = () => {
     // contexts
     const { createRoom } = useChatContext();
     const { rooms, activeRoom, joinRoom } = usePlusChatContext();
-
+    // states
     const [newRoomName, setNewRoomName] = useState('');
 
     const handleCreateRoom = (e: React.FormEvent) => {
@@ -57,9 +57,9 @@ export const RoomList: React.FC = () => {
                             }`}
                         >
                             <div className="font-medium">{room.name}</div>
-                            {/* <div className="text-sm text-gray-500 dark:text-gray-400">
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
                                 {room.users.length} 人が参加中
-                            </div> */}
+                            </div>
                         </button>
                     ))}
                 </div>

@@ -4,7 +4,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { useUser } from '@clerk/nextjs';
 import { UserResource } from '@clerk/types';
 // types
-import { User, Room, ChatRoom, MiniAuthUser } from '@/app/types/types';
+import { MiniAuthUser } from '@/app/types/auth-users';
+import { ChatRoom } from '@/app/types/types';
 // consts
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 
@@ -20,7 +21,7 @@ const convertToMiniAuthUser = (user: UserResource | null | undefined): MiniAuthU
     if (!user) return null;
     return {
         id: user.id,
-        name: user.fullName || 'Unknown User', // Clerk からフルネームを取得（なければデフォルト名）
+        name: user.fullName || 'Unknown User',
     };
 };
 
@@ -64,7 +65,7 @@ export const PlusChatProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, [isLoaded, currentUser]);
 
     /**
-     * 部屋に参加ß
+     * 部屋に参加
      * @param roomId 部屋ID
      */
     const joinRoom = useCallback(

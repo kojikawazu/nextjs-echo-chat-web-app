@@ -1,19 +1,53 @@
 'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 // contexts
 import { useChatContext } from '@/app/contexts/ChatContext';
+import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
+// consts
+import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
+// types
+import { RoomMessage } from '@/app/types/types';
 // components
-import { MessageBubble } from '@/app/components/room/MessageButton';
+import { MessageButton } from '@/app/components/room/MessageButton';
 
+/**
 /**
  * チャットルーム
  * @returns JSX.Element
  */
 export const ChatRoom: React.FC = () => {
-    const { activeRoom, sendMessage, currentUser } = useChatContext();
+    // clerk
+    const { user, isLoaded } = useUser();
+    // contexts
+    const { sendMessage } = useChatContext();
+    const { currentUser, activeRoom, joinRoom } = usePlusChatContext();
+    // states
     const [newMessage, setNewMessage] = useState('');
+    const [messages, setMessages] = useState<RoomMessage[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!isLoaded) return;
+        if (!activeRoom) return;
+
+        const fetchMessages = async () => {
+            const response = await fetch(
+                `${COMMON_CONSTANTS.URL.FETCH_MESSAGES.replace(':id', activeRoom.id)}`,
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch messages');
+            }
+
+            const data = await response.json();
+            setMessages(data);
+        };
+
+        fetchMessages();
+    }, [isLoaded, activeRoom]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -21,7 +55,7 @@ export const ChatRoom: React.FC = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [activeRoom?.messages]);
+    }, [messages]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,11 +81,11 @@ export const ChatRoom: React.FC = () => {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {activeRoom.messages.map((message) => (
-                    <MessageBubble
-                        key={message.id}
+                {messages.map((message, index) => (
+                    <MessageButton
+                        key={index}
                         message={message}
-                        isOwn={message.userId === currentUser?.id}
+                        isOwn={message.user_id === currentUser?.id}
                     />
                 ))}
                 <div ref={messagesEndRef} />

@@ -1,3 +1,6 @@
+import { MiniAuthUser } from '@/app/types/auth-users';
+import { MiniMessageLikes } from '@/app/types/chat-likes';
+
 export interface User {
     id: string;
     name: string;
@@ -29,11 +32,6 @@ export interface Room {
 
 // -------------------------------------------------------------------------------------------------
 
-export interface MiniAuthUser {
-    id: string;
-    name: string;
-}
-
 export interface ChatRoom {
     id: string;
     name: string;
@@ -53,10 +51,6 @@ export interface RoomMessage {
     name: string;
     content: string;
     created_at: Date;
-}
-
-export interface MessageLike {
-    name: string;
-    userId: string;
-    createdAt: Date;
+    like_count: number;
+    liked_users: MiniMessageLikes[];
 }
