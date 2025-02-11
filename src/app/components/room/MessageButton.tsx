@@ -1,12 +1,13 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
+// types
+import { RoomMessage, ChatRoom } from '@/app/types/types';
 // contexts
 import { useChatContext } from '@/app/contexts/ChatContext';
-// types
-import { Message } from '@/app/types/types';
+import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
 
-interface MessageBubbleProps {
-    message: Message;
+interface MessageButtonProps {
+    message: RoomMessage;
     isOwn: boolean;
 }
 
@@ -15,15 +16,19 @@ interface MessageBubbleProps {
  * @param props
  * @returns JSX.Element
  */
-export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) => {
-    const { rooms, toggleLike, currentUser } = useChatContext();
+export const MessageButton: React.FC<MessageButtonProps> = ({ message, isOwn }) => {
+    const { toggleLike } = useChatContext();
+    const { rooms, currentUser } = usePlusChatContext();
 
-    const sender = rooms.flatMap((room) => room.users).find((user) => user.id === message.userId);
+    const sender = rooms
+        .flatMap((room: ChatRoom) => room.users)
+        .find((user) => user.id === message.user_id);
     const senderName = sender?.name || '不明なユーザー';
-    const hasLiked = message.likes.some((like) => like.userId === currentUser?.id);
 
-    const likeCount = message.likes.length;
-    const likedUsers = message.likes.map((like) => {
+    const hasLiked = message.liked_users.some((like) => like.userId === currentUser?.id);
+
+    const likeCount = message.like_count;
+    const likedUsers = message.liked_users.map((like) => {
         const user = rooms.flatMap((room) => room.users).find((u) => u.id === like.userId);
         return user?.name || '不明なユーザー';
     });
@@ -55,10 +60,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) 
                                 isOwn ? 'text-primary-100' : 'text-accent-700 dark:text-accent-200'
                             }`}
                         >
-                            {new Date(message.timestamp).toLocaleTimeString()}
+                            {new Date(message.created_at).toLocaleTimeString()}
                         </span>
                         <button
-                            onClick={() => toggleLike(message.id)}
+                            onClick={() => toggleLike(message.message_id)}
                             className={`flex items-center space-x-1.5 rounded-full px-2 py-1 ${
                                 isOwn
                                     ? 'text-primary-100 hover:bg-primary-700/50'

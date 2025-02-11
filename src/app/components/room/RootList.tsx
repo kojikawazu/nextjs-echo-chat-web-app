@@ -1,35 +1,66 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Plus } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
 // contexts
-import { useChatContext } from '@/app/contexts/ChatContext';
-
+import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
+// schema
+import { roomCreateSchema, RoomCreateFormValues } from '@/app/schema/room-schema';
+// api
+import { createRoom } from '@/app/lib/api/room/create-room';
 /**
  * ルームリスト
  * @returns JSX.Element
  */
 export const RoomList: React.FC = () => {
-    const { rooms, createRoom, joinRoom, activeRoom } = useChatContext();
-    const [newRoomName, setNewRoomName] = useState('');
+    // contexts
+    const { rooms, activeRoom, joinRoom, fetcher } = usePlusChatContext();
 
-    const handleCreateRoom = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (newRoomName.trim()) {
-            createRoom(newRoomName);
-            setNewRoomName('');
+    // フォーム
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<RoomCreateFormValues>({
+        resolver: zodResolver(roomCreateSchema),
+    });
+
+    // 作成ハンドラー
+    const handleConfirmCreate = (data: RoomCreateFormValues) => {
+        if (data) {
+            createMutation.mutate(data);
+            reset();
         }
     };
+
+    // 作成用のミューテーション
+    const createMutation = useMutation({
+        mutationFn: (createdData: RoomCreateFormValues) => createRoom(createdData),
+        onSuccess: () => {
+            fetcher();
+            console.log('部屋作成成功');
+        },
+        onError: () => {
+            console.log('部屋作成失敗');
+        },
+    });
 
     return (
         <div className="w-72 bg-gray-50 dark:bg-dark-200 border-r border-gray-200 dark:border-dark-300 transition-colors duration-200">
             <div className="p-4">
-                <form onSubmit={handleCreateRoom} className="mb-4">
+                {errors.room_name && (
+                    <p className="text-red-500 text-sm mt-1">{errors.room_name.message}</p>
+                )}
+                <form onSubmit={handleSubmit(handleConfirmCreate)} className="mb-4">
                     <div className="relative">
                         <input
                             type="text"
-                            value={newRoomName}
-                            onChange={(e) => setNewRoomName(e.target.value)}
+                            id="room_name"
+                            {...register('room_name')}
                             className="w-full px-4 py-2 pr-10 bg-white dark:bg-dark-100 border border-gray-300 dark:border-dark-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 dark:text-white transition-colors duration-200"
                             placeholder="新しい部屋を作成..."
                         />
