@@ -2,8 +2,12 @@
 
 import { useState } from 'react';
 import { UserResource } from '@clerk/types';
+// types
 import { ChatRoom, RoomMessage } from '@/app/types/types';
 import { MiniMessageLikes } from '@/app/types/chat-likes';
+// api
+import { createLike } from '@/app/lib/api/likes/create-like';
+import { deleteLike } from '@/app/lib/api/likes/delete-like';
 
 interface UseMessageLikeProps {
     currentUser: UserResource | null | undefined;
@@ -36,7 +40,7 @@ export const useMessageLike = ({
     /**
      * いいねを切り替え
      */
-    const toggleLike = () => {
+    const toggleLike = async () => {
         if (!currentUser || !activeRoom || !message) return;
 
         const likedUsers = message.liked_users ?? [];
@@ -45,16 +49,25 @@ export const useMessageLike = ({
         );
         let updatedLikes: MiniMessageLikes[] = [];
 
-        if (hasLiked) {
-            updatedLikes = likedUsers.filter(
+        try {
+            if (hasLiked) {
+                await deleteLike(message.message_id, currentUser.id);
+                
+                updatedLikes = likedUsers.filter(
                 (like: MiniMessageLikes) => like.userId !== currentUser.id,
             );
         } else {
+            await createLike(message.message_id, currentUser.id);
+
             const newLike: MiniMessageLikes = {
                 userId: currentUser.id,
                 name: currentUser.fullName || 'Unknown User',
-            };
-            updatedLikes = [...likedUsers, newLike];
+                };
+                updatedLikes = [...likedUsers, newLike];
+            }
+        } catch (error) {
+            console.error('いいねの切り替えに失敗しました:', error);
+            return;
         }
 
         // メッセージを更新
