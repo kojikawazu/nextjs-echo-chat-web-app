@@ -29,7 +29,10 @@ export const RoomList: React.FC = () => {
         resolver: zodResolver(roomCreateSchema),
     });
 
-    // 作成ハンドラー
+    /**
+     * 部屋作成ハンドラー
+     * @param data 部屋作成データ
+     */
     const handleConfirmCreate = (data: RoomCreateFormValues) => {
         if (data) {
             createMutation.mutate(data);
@@ -37,7 +40,9 @@ export const RoomList: React.FC = () => {
         }
     };
 
-    // 作成用のミューテーション
+    /**
+     * 部屋作成用のミューテーション
+     */
     const createMutation = useMutation({
         mutationFn: (createdData: RoomCreateFormValues) => createRoom(createdData),
         onSuccess: () => {

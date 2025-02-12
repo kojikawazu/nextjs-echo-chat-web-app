@@ -11,7 +11,6 @@ import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 // types
 import { RoomMessage } from '@/app/types/types';
 // contexts
-import { useChatContext } from '@/app/contexts/ChatContext';
 import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
 // schema
 import {
@@ -30,21 +29,27 @@ import { MessageButton } from '@/app/components/room/MessageButton';
  */
 export const ChatRoom: React.FC = () => {
     // clerk
-    const { user, isLoaded } = useUser();
+    const { isLoaded } = useUser();
     // contexts
-    const { sendMessage } = useChatContext();
-    const { currentUser, activeRoom, joinRoom } = usePlusChatContext();
+    const { currentUser, activeRoom } = usePlusChatContext();
     // states
+    // メッセージ
     const [messages, setMessages] = useState<RoomMessage[]>([]);
+    // メッセージ作成中
     const [isCreating, setIsCreating] = useState(false);
+    // メッセージの最下部
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    // メッセージを取得
     useEffect(() => {
         if (!isLoaded) return;
         if (!activeRoom) return;
         fetchMessages();
     }, [isLoaded, activeRoom]);
 
+    /**
+     * メッセージを取得
+     */
     const fetchMessages = async () => {
         if (!activeRoom) return;
         setIsCreating(true);
@@ -53,6 +58,7 @@ export const ChatRoom: React.FC = () => {
             const response = await fetch(
                 `${COMMON_CONSTANTS.URL.FETCH_MESSAGES.replace(':id', activeRoom.id)}`,
             );
+
             if (!response.ok) {
                 throw new Error('Failed to fetch messages');
             }
@@ -66,10 +72,16 @@ export const ChatRoom: React.FC = () => {
         }
     };
 
+    /**
+     * メッセージの最下部にスクロール
+     */
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
+    /**
+     * メッセージの最下部にスクロール
+     */
     useEffect(() => {
         scrollToBottom();
     }, [messages]);
@@ -89,7 +101,10 @@ export const ChatRoom: React.FC = () => {
         },
     });
 
-    // メッセージ作成ハンドラー
+    /**
+     * メッセージ作成ハンドラー
+     * @param data メッセージ作成データ
+     */
     const handleCreateMessage = (data: ChatMessageCreateFormValues) => {
         if (data) {
             createMutation.mutate(data);
@@ -97,7 +112,9 @@ export const ChatRoom: React.FC = () => {
         }
     };
 
-    // メッセージ作成用のミューテーション
+    /**
+     * メッセージ作成用のミューテーション
+     */
     const createMutation = useMutation({
         mutationFn: (createdData: ChatMessageCreateFormValues) => createMessage(createdData),
         onSuccess: () => {
@@ -130,7 +147,7 @@ export const ChatRoom: React.FC = () => {
                     messages.map((message, index) => (
                         <MessageButton
                             key={index}
-                            message={message}
+                            initialMessage={message}
                             isOwn={message.user_id === currentUser?.id}
                         />
                     ))}
