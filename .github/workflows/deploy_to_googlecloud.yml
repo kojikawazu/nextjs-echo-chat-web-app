@@ -24,7 +24,7 @@ jobs:
 
             - name: Create file
               run: |
-                  echo NEXT_PUBLIC_BACKEND_API_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }} >> .env
+                  echo NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }} >> .env
                   echo NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} >> .env
                   echo CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} >> .env
                   echo NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }} >> .env
