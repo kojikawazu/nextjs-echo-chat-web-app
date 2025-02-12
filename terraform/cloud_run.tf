@@ -50,7 +50,7 @@ resource "google_cloud_run_service" "nextjs_echo_chat_app_service" {
           value = var.clerk_after_sign_up_url
         }
         env {
-          name  = "NEXT_PUBLIC_CLERK_SECRET_KEY"
+          name  = "CLERK_SECRET_KEY"
           value = var.clerk_secret_key
         }
       }
