@@ -5,7 +5,8 @@ import { useUser } from '@clerk/nextjs';
 import { UserResource } from '@clerk/types';
 // types
 import { MiniAuthUser } from '@/app/types/auth-users';
-import { ChatRoom } from '@/app/types/types';
+import { MiniMessageLikes } from '@/app/types/chat-likes';
+import { ChatRoom, RoomMessage } from '@/app/types/types';
 // api
 import { fetchRooms } from '@/app/lib/api/room/fetch-rooms';
 
@@ -16,8 +17,14 @@ interface PlusChatContextType {
     isLoading: boolean;
     joinRoom: (roomId: string) => void;
     fetcher: () => void;
+    toggleLike: (messageId: string, message: RoomMessage) => RoomMessage;
 }
 
+/**
+ * ユーザーを小さいユーザーに変換
+ * @param user ユーザー
+ * @returns 小さいユーザー
+ */
 const convertToMiniAuthUser = (user: UserResource | null | undefined): MiniAuthUser | null => {
     if (!user) return null;
     return {
@@ -28,13 +35,22 @@ const convertToMiniAuthUser = (user: UserResource | null | undefined): MiniAuthU
 
 const PlusChatContext = createContext<PlusChatContextType | null>(null);
 
+/**
+ * PlusChatProvider
+ * @param props
+ * @returns PlusChatProvider
+ */
 export const PlusChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // clerk
     const { user, isLoaded } = useUser();
     // state
+    // 現在のユーザー
     const [currentUser, setCurrentUser] = useState<UserResource | null | undefined>(null);
+    // 部屋
     const [rooms, setRooms] = useState<ChatRoom[]>([]);
+    // アクティブな部屋
     const [activeRoom, setActiveRoom] = useState<ChatRoom | null>(null);
+    // ローディング
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -114,9 +130,42 @@ export const PlusChatProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         [currentUser, activeRoom],
     );
 
+    /**
+     * いいねを切り替え
+     * @param messageId メッセージID
+     */
+    const toggleLike = useCallback(
+        (messageId: string, message: RoomMessage): RoomMessage => {
+            if (!currentUser || !activeRoom || !message) return message;
+
+            const likedUsers = message.liked_users ?? [];
+            const hasLiked = likedUsers.some((like) => like.userId === currentUser.id);
+            let updatedLikes: MiniMessageLikes[] = [];
+
+            if (hasLiked) {
+                updatedLikes = likedUsers.filter((like) => like.userId !== currentUser.id);
+            } else {
+                const newLike: MiniMessageLikes = {
+                    userId: currentUser.id,
+                    name: currentUser.fullName || 'Unknown User',
+                };
+                updatedLikes = [...likedUsers, newLike];
+            }
+
+            const updatedMessage = {
+                ...message,
+                liked_users: updatedLikes,
+            };
+
+            console.log('message', updatedMessage);
+            return updatedMessage;
+        },
+        [currentUser, activeRoom],
+    );
+
     return (
         <PlusChatContext.Provider
-            value={{ currentUser, rooms, activeRoom, isLoading, joinRoom, fetcher }}
+            value={{ currentUser, rooms, activeRoom, isLoading, joinRoom, fetcher, toggleLike }}
         >
             {children}
         </PlusChatContext.Provider>

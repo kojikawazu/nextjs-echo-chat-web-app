@@ -16,6 +16,7 @@ interface ChatContextType {
 
 const ChatContext = createContext<ChatContextType | null>(null);
 
+// デバッグ用のユーザー
 const USERS: User[] = [
     { id: '1', name: 'demo', password: 'demo123' },
     { id: '2', name: 'test', password: 'test123' },
@@ -74,11 +75,25 @@ const INITIAL_ROOMS: Room[] = [
     },
 ];
 
+/**
+ * チャットプロバイダー
+ * @param props
+ * @returns チャットプロバイダー
+ */
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    // 現在のユーザー
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    // 部屋
     const [rooms, setRooms] = useState<Room[]>(INITIAL_ROOMS);
+    // アクティブな部屋
     const [activeRoom, setActiveRoom] = useState<Room | null>(null);
 
+    /**
+     * ログイン
+     * @param username ユーザー名
+     * @param password パスワード
+     * @returns ログイン成功かどうか
+     */
     const login = useCallback((username: string, password: string): boolean => {
         const user = USERS.find((u) => u.name === username && u.password === password);
         if (user) {
@@ -88,6 +103,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return false;
     }, []);
 
+    /**
+     * 部屋を作成
+     * @param name 部屋名
+     */
     const createRoom = useCallback((name: string) => {
         const newRoom: Room = {
             id: Math.random().toString(36).substr(2, 9),
@@ -98,6 +117,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setRooms((prev) => [...prev, newRoom]);
     }, []);
 
+    /**
+     * 部屋に参加
+     * @param roomId 部屋ID
+     */
     const joinRoom = useCallback(
         (roomId: string) => {
             if (!currentUser) return;
@@ -139,6 +162,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         [currentUser, activeRoom],
     );
 
+    /**
+     * メッセージを送信
+     * @param content メッセージ内容
+     */
     const sendMessage = useCallback(
         (content: string) => {
             if (!currentUser || !activeRoom) return;
@@ -168,6 +195,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         [currentUser, activeRoom],
     );
 
+    /**
+     * いいねを切り替え
+     * @param messageId メッセージID
+     */
     const toggleLike = useCallback(
         (messageId: string) => {
             if (!currentUser || !activeRoom) return;

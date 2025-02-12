@@ -1,7 +1,7 @@
 // constants
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 // schema
-import { RoomCreateFormValues } from '@/app/schema/room-schema';
+import { RoomCreateFormValues } from '@/app/schema/chat-room-schema';
 
 /**
  * チャットルームを作成

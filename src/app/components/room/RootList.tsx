@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 // contexts
 import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
 // schema
-import { roomCreateSchema, RoomCreateFormValues } from '@/app/schema/room-schema';
+import { roomCreateSchema, RoomCreateFormValues } from '@/app/schema/chat-room-schema';
 // api
 import { createRoom } from '@/app/lib/api/room/create-room';
 /**
@@ -29,7 +29,10 @@ export const RoomList: React.FC = () => {
         resolver: zodResolver(roomCreateSchema),
     });
 
-    // 作成ハンドラー
+    /**
+     * 部屋作成ハンドラー
+     * @param data 部屋作成データ
+     */
     const handleConfirmCreate = (data: RoomCreateFormValues) => {
         if (data) {
             createMutation.mutate(data);
@@ -37,7 +40,9 @@ export const RoomList: React.FC = () => {
         }
     };
 
-    // 作成用のミューテーション
+    /**
+     * 部屋作成用のミューテーション
+     */
     const createMutation = useMutation({
         mutationFn: (createdData: RoomCreateFormValues) => createRoom(createdData),
         onSuccess: () => {

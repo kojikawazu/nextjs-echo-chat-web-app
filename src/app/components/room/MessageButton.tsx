@@ -1,13 +1,15 @@
+'use client';
+
 import React from 'react';
 import { Heart } from 'lucide-react';
 // types
 import { RoomMessage, ChatRoom } from '@/app/types/types';
 // contexts
-import { useChatContext } from '@/app/contexts/ChatContext';
 import { usePlusChatContext } from '@/app/contexts/PlusChatContext';
+import { useMessageLike } from '@/app/hooks/useMessageLike';
 
 interface MessageButtonProps {
-    message: RoomMessage;
+    initialMessage: RoomMessage;
     isOwn: boolean;
 }
 
@@ -16,22 +18,25 @@ interface MessageButtonProps {
  * @param props
  * @returns JSX.Element
  */
-export const MessageButton: React.FC<MessageButtonProps> = ({ message, isOwn }) => {
-    const { toggleLike } = useChatContext();
-    const { rooms, currentUser } = usePlusChatContext();
+export const MessageButton: React.FC<MessageButtonProps> = ({ initialMessage, isOwn }) => {
+    // contexts
+    const { rooms, currentUser, activeRoom } = usePlusChatContext();
+    // hooks
+    const { toggleLike, message, likeCount, likedUsers, hasLiked } = useMessageLike({
+        // 現在のユーザー
+        currentUser,
+        // アクティブなチャットルーム
+        activeRoom,
+        // 初期メッセージ
+        initialMessage,
+    });
 
+    // 送信者
     const sender = rooms
         .flatMap((room: ChatRoom) => room.users)
         .find((user) => user.id === message.user_id);
+    // 送信者名
     const senderName = sender?.name || '不明なユーザー';
-
-    const hasLiked = message.liked_users.some((like) => like.userId === currentUser?.id);
-
-    const likeCount = message.like_count;
-    const likedUsers = message.liked_users.map((like) => {
-        const user = rooms.flatMap((room) => room.users).find((u) => u.id === like.userId);
-        return user?.name || '不明なユーザー';
-    });
 
     return (
         <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mb-4`}>
@@ -63,7 +68,7 @@ export const MessageButton: React.FC<MessageButtonProps> = ({ message, isOwn }) 
                             {new Date(message.created_at).toLocaleTimeString()}
                         </span>
                         <button
-                            onClick={() => toggleLike(message.message_id)}
+                            onClick={toggleLike}
                             className={`flex items-center space-x-1.5 rounded-full px-2 py-1 ${
                                 isOwn
                                     ? 'text-primary-100 hover:bg-primary-700/50'
