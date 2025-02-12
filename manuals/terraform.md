@@ -21,7 +21,7 @@ gcloud config get-value project
 
 ```bash
 # ビルド
-docker build -t asia-northeast1-docker.pkg.dev/[project-id]/[repository-id]/[image-name] .
+docker buildx build --platform=linux/amd64 -t asia-northeast1-docker.pkg.dev/[project-id]/[repository-id]/[image-name] .
 
 # テスト
 docker run -p 8000:8000 asia-northeast1-docker.pkg.dev/[project-id]/[repository-id]/[image-name]
@@ -33,8 +33,8 @@ npm run dev
 # 認証
 gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
-# プッシュ
-docker push asia-northeast1-docker.pkg.dev/[project-id]/[repository-id]/[image-name]
+# ビルドプッシュ
+docker buildx build --platform=linux/amd64 -t asia-northeast1-docker.pkg.dev/[project-id]/[repository-id]/[image-name] --push .
 
 # リスト
 gcloud artifacts docker images list asia-northeast1-docker.pkg.dev/[project-id]/[repository-id]
