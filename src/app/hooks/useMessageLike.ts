@@ -17,7 +17,11 @@ interface UseMessageLikeProps {
  * @param activeRoom アクティブなチャットルーム
  * @param initialMessage 初期メッセージ
  */
-export const useMessageLike = ({ currentUser, activeRoom, initialMessage }: UseMessageLikeProps) => {
+export const useMessageLike = ({
+    currentUser,
+    activeRoom,
+    initialMessage,
+}: UseMessageLikeProps) => {
     // states
     const [message, setMessage] = useState<RoomMessage>(initialMessage);
     // いいね数
@@ -26,7 +30,7 @@ export const useMessageLike = ({ currentUser, activeRoom, initialMessage }: UseM
     const [likedUsers, setLikedUsers] = useState<MiniMessageLikes[]>(message?.liked_users ?? []);
     // いいねしたかどうか
     const [hasLiked, setHasLiked] = useState(
-        message?.liked_users.some((like) => like.userId === currentUser?.id) ?? false
+        message?.liked_users.some((like) => like.userId === currentUser?.id) ?? false,
     );
 
     /**
@@ -34,13 +38,17 @@ export const useMessageLike = ({ currentUser, activeRoom, initialMessage }: UseM
      */
     const toggleLike = () => {
         if (!currentUser || !activeRoom || !message) return;
-        
+
         const likedUsers = message.liked_users ?? [];
-        const hasLiked = likedUsers.some((like: MiniMessageLikes) => like.userId === currentUser.id);
+        const hasLiked = likedUsers.some(
+            (like: MiniMessageLikes) => like.userId === currentUser.id,
+        );
         let updatedLikes: MiniMessageLikes[] = [];
 
         if (hasLiked) {
-            updatedLikes = likedUsers.filter((like: MiniMessageLikes) => like.userId !== currentUser.id);
+            updatedLikes = likedUsers.filter(
+                (like: MiniMessageLikes) => like.userId !== currentUser.id,
+            );
         } else {
             const newLike: MiniMessageLikes = {
                 userId: currentUser.id,
