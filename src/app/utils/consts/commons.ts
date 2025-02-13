@@ -26,6 +26,7 @@ export const COMMON_CONSTANTS = {
         },
         ROOM: {
             ERROR_CREATE: 'チャットルームの作成に失敗しました',
+            ERROR_FETCH: 'チャットルームの取得に失敗しました',
         },
     },
     WEBSOCKET: {
