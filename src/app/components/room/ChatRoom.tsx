@@ -53,11 +53,32 @@ export const ChatRoom: React.FC = () => {
 
         ws.current.onopen = () => {
             console.log(COMMON_CONSTANTS.WEBSOCKET.ERROR_CONNECT);
+
+            // ルームIDを送信
+            ws.current?.send(
+                JSON.stringify({
+                    type: 'join',
+                    data: {
+                        room_id: activeRoom.id,
+                        user_id: currentUser?.id,
+                    },
+                }),
+            );
         };
 
         ws.current.onmessage = (event) => {
-            const newMessage: RoomMessage = JSON.parse(event.data);
-            setMessages((prev) => [...prev, newMessage]);
+            console.log('Received from WebSocket:', event.data);
+            const data = JSON.parse(event.data);
+            const receivedMessage: RoomMessage = {
+                user_id: data.user_id,
+                message_id: data.message_id,
+                name: data.name,
+                content: data.content,
+                created_at: data.created_at,
+                like_count: data.like_count,
+                liked_users: data.liked_users,
+            };
+            setMessages((prev) => [...prev, receivedMessage]);
         };
 
         ws.current.onclose = () => {
