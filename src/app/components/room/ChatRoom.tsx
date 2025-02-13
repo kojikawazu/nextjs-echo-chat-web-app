@@ -19,6 +19,7 @@ import {
 } from '@/app/schema/chat-message-schema';
 // api
 import { createMessage } from '@/app/lib/api/message/create-message';
+import { fetchMessages } from '@/app/lib/api/message/fetch-messages';
 // components
 import { MessageButton } from '@/app/components/room/MessageButton';
 
@@ -46,7 +47,7 @@ export const ChatRoom: React.FC = () => {
     // メッセージを取得
     useEffect(() => {
         if (!isLoaded || !activeRoom) return;
-        fetchMessages();
+        localFetchMessages();
 
         // WebSocket 接続
         ws.current = new WebSocket(COMMON_CONSTANTS.URL.WS);
@@ -71,7 +72,7 @@ export const ChatRoom: React.FC = () => {
         ws.current.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                if (data.type === "message") {
+                if (data.type === 'message') {
                     const receivedMessage: RoomMessage = {
                         user_id: data.data.user_id,
                         message_id: data.data.message_id,
@@ -87,7 +88,6 @@ export const ChatRoom: React.FC = () => {
                 console.error(COMMON_CONSTANTS.WEBSOCKET.ERROR_RECEIVED);
             }
         };
-        
 
         ws.current.onclose = () => {
             console.log(COMMON_CONSTANTS.WEBSOCKET.DISCONNECT);
@@ -102,27 +102,19 @@ export const ChatRoom: React.FC = () => {
     useEffect(() => {
         if (!isLoaded) return;
         if (!activeRoom) return;
-        fetchMessages();
+        localFetchMessages();
     }, [isLoaded, activeRoom]);
 
     /**
      * メッセージを取得
      */
-    const fetchMessages = async () => {
+    const localFetchMessages = async () => {
         if (!activeRoom) return;
         setIsCreating(true);
 
         try {
-            const response = await fetch(
-                `${COMMON_CONSTANTS.URL.FETCH_MESSAGES.replace(':id', activeRoom.id)}`,
-            );
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch messages');
-            }
-
-            const data = await response.json();
-            setMessages(data);
+            const response = await fetchMessages(activeRoom.id);
+            setMessages(response);
         } catch (error) {
             console.error('Failed to fetch messages:', error);
         } finally {
@@ -177,7 +169,7 @@ export const ChatRoom: React.FC = () => {
         mutationFn: (createdData: ChatMessageCreateFormValues) => createMessage(createdData),
         onSuccess: () => {
             console.log('メッセージ作成成功');
-            fetchMessages();
+            localFetchMessages();
         },
         onError: () => {
             console.log('メッセージ作成失敗');
