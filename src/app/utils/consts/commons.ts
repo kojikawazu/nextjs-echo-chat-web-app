@@ -12,4 +12,13 @@ export const COMMON_CONSTANTS = {
         SIGN_IN: '/sign-in',
         SIGN_UP: '/sign-up',
     },
+    MESSAGES: {
+        LIKE: {
+            ERROR_CREATE: 'いいねの作成に失敗しました',
+            ERROR_DELETE: 'いいねの削除に失敗しました',
+        },
+        MESSAGE: {
+            ERROR_CREATE: 'チャットメッセージの作成に失敗しました',
+        },
+    },
 };
