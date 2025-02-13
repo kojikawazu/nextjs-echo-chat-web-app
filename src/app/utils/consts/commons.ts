@@ -20,5 +20,8 @@ export const COMMON_CONSTANTS = {
         MESSAGE: {
             ERROR_CREATE: 'チャットメッセージの作成に失敗しました',
         },
+        ROOM: {
+            ERROR_CREATE: 'チャットルームの作成に失敗しました',
+        },
     },
 };
