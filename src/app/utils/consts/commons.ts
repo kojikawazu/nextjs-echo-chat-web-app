@@ -9,14 +9,15 @@ export const COMMON_CONSTANTS = {
         DELETE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
 
         WS: process.env.NEXT_PUBLIC_BACKEND_URL + '/ws',
-
-        API_MESSAGE_CREATE: '/api/messages/create',
     },
     LINK: {
         SIGN_IN: '/sign-in',
         SIGN_UP: '/sign-up',
     },
     MESSAGES: {
+        FETCH: {
+            ERROR_FETCH: 'チャットメッセージの取得に失敗しました',
+        },
         LIKE: {
             ERROR_CREATE: 'いいねの作成に失敗しました',
             ERROR_DELETE: 'いいねの削除に失敗しました',
