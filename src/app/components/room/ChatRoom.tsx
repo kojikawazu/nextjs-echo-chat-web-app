@@ -52,7 +52,7 @@ export const ChatRoom: React.FC = () => {
         ws.current = new WebSocket(COMMON_CONSTANTS.URL.WS);
 
         ws.current.onopen = () => {
-            console.log(COMMON_CONSTANTS.WEBSOCKET.ERROR_CONNECT);
+            console.log(COMMON_CONSTANTS.WEBSOCKET.CONNECTING);
 
             // ルームIDを送信
             ws.current?.send(
@@ -64,25 +64,35 @@ export const ChatRoom: React.FC = () => {
                     },
                 }),
             );
+
+            console.log(COMMON_CONSTANTS.WEBSOCKET.CONNECT);
         };
 
         ws.current.onmessage = (event) => {
-            console.log('Received from WebSocket:', event.data);
-            const data = JSON.parse(event.data);
-            const receivedMessage: RoomMessage = {
-                user_id: data.user_id,
-                message_id: data.message_id,
-                name: data.name,
-                content: data.content,
-                created_at: data.created_at,
-                like_count: data.like_count,
-                liked_users: data.liked_users,
-            };
-            setMessages((prev) => [...prev, receivedMessage]);
+            console.log(COMMON_CONSTANTS.WEBSOCKET.RECEIVED);
+            try {
+                const data = JSON.parse(event.data);
+                if (data.type === "message") {
+                    const data = JSON.parse(event.data);
+                    const receivedMessage: RoomMessage = {
+                        user_id: data.user_id,
+                        message_id: data.message_id,
+                        name: data.name,
+                        content: data.content,
+                        created_at: data.created_at,
+                        like_count: data.like_count,
+                        liked_users: data.liked_users,
+                    };
+                    setMessages((prev) => [...prev, receivedMessage]);
+                }
+            } catch (error) {
+                console.error(COMMON_CONSTANTS.WEBSOCKET.ERROR_RECEIVED);
+            }
         };
+        
 
         ws.current.onclose = () => {
-            console.log(COMMON_CONSTANTS.WEBSOCKET.ERROR_DISCONNECT);
+            console.log(COMMON_CONSTANTS.WEBSOCKET.DISCONNECT);
         };
 
         return () => {

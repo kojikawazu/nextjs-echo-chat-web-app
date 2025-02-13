@@ -29,7 +29,13 @@ export const COMMON_CONSTANTS = {
         },
     },
     WEBSOCKET: {
+        CONNECTING: 'WebSocket 接続中...',
+        CONNECTION_REQUEST: 'WebSocket 接続要求を受け取りました',
+        CONNECT: 'WebSocket 接続に成功しました',
         ERROR_CONNECT: 'WebSocket 接続に失敗しました',
+        DISCONNECT: 'WebSocket 接続が解除されました',
         ERROR_DISCONNECT: 'WebSocket 接続が解除されました',
+        RECEIVED: 'WebSocket メッセージを受信しました',
+        ERROR_RECEIVED: 'WebSocket メッセージを受信に失敗しました',
     },
 };
