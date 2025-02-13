@@ -17,14 +17,14 @@ export async function createLike(id: string) {
 
         const response = await fetch(`${COMMON_CONSTANTS.URL.CREATE_LIKE.replace(':id', id)}`, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
             credentials: 'include',
         });
 
-    if (!response.ok) {
+        if (!response.ok) {
             throw new Error(COMMON_CONSTANTS.MESSAGES.LIKE.ERROR_CREATE);
         }
 

@@ -17,9 +17,9 @@ export async function deleteLike(id: string) {
 
         const response = await fetch(`${COMMON_CONSTANTS.URL.DELETE_LIKE.replace(':id', id)}`, {
             method: 'DELETE',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
         });
 

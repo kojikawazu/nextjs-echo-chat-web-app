@@ -52,16 +52,16 @@ export const useMessageLike = ({
         try {
             if (hasLiked) {
                 await deleteLike(message.message_id);
-                
-                updatedLikes = likedUsers.filter(
-                (like: MiniMessageLikes) => like.userId !== currentUser.id,
-            );
-        } else {
-            await createLike(message.message_id);
 
-            const newLike: MiniMessageLikes = {
-                userId: currentUser.id,
-                name: currentUser.fullName || 'Unknown User',
+                updatedLikes = likedUsers.filter(
+                    (like: MiniMessageLikes) => like.userId !== currentUser.id,
+                );
+            } else {
+                await createLike(message.message_id);
+
+                const newLike: MiniMessageLikes = {
+                    userId: currentUser.id,
+                    name: currentUser.fullName || 'Unknown User',
                 };
                 updatedLikes = [...likedUsers, newLike];
             }

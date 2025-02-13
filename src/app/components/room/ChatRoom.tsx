@@ -40,6 +40,35 @@ export const ChatRoom: React.FC = () => {
     // メッセージの最下部
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    // WebSocket の接続用
+    const ws = useRef<WebSocket | null>(null);
+
+    // メッセージを取得
+    useEffect(() => {
+        if (!isLoaded || !activeRoom) return;
+        fetchMessages();
+
+        // WebSocket 接続
+        ws.current = new WebSocket(COMMON_CONSTANTS.URL.WS);
+
+        ws.current.onopen = () => {
+            console.log(COMMON_CONSTANTS.WEBSOCKET.ERROR_CONNECT);
+        };
+
+        ws.current.onmessage = (event) => {
+            const newMessage: RoomMessage = JSON.parse(event.data);
+            setMessages((prev) => [...prev, newMessage]);
+        };
+
+        ws.current.onclose = () => {
+            console.log(COMMON_CONSTANTS.WEBSOCKET.ERROR_DISCONNECT);
+        };
+
+        return () => {
+            ws.current?.close();
+        };
+    }, [isLoaded, activeRoom]);
+
     // メッセージを取得
     useEffect(() => {
         if (!isLoaded) return;
