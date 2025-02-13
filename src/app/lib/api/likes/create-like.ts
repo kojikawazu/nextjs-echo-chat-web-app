@@ -1,19 +1,28 @@
+'use server';
+
+import { auth } from '@clerk/nextjs/server';
 // constants
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 
 /**
  * いいねを作成
  * @param id メッセージID
- * @param userId ユーザーID
  * @returns 作成データ
  */
-export async function createLike(id: string, userId: string) {
+export async function createLike(id: string) {
     try {
-        const response = await fetch(`${COMMON_CONSTANTS.URL.CREATE_LIKE.replace(':id', id).replace(':userId', userId)}`, {
+        // トークンを取得
+        const { getToken } = await auth();
+        const token = await getToken();
+
+        const response = await fetch(`${COMMON_CONSTANTS.URL.CREATE_LIKE.replace(':id', id)}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
             credentials: 'include',
-    });
+        });
 
     if (!response.ok) {
             throw new Error(COMMON_CONSTANTS.MESSAGES.LIKE.ERROR_CREATE);

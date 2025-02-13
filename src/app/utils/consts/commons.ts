@@ -5,8 +5,8 @@ export const COMMON_CONSTANTS = {
         FETCH_MESSAGES: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/rooms/:id/messages',
         CREATE_ROOM: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/rooms',
         CREATE_MESSAGE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages',
-        CREATE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes/:userId',
-        DELETE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes/:userId',
+        CREATE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
+        DELETE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
     },
     LINK: {
         SIGN_IN: '/sign-in',
