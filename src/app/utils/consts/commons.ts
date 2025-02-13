@@ -8,6 +8,8 @@ export const COMMON_CONSTANTS = {
         CREATE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
         DELETE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
 
+        WS: process.env.NEXT_PUBLIC_BACKEND_URL + '/ws',
+
         API_MESSAGE_CREATE: '/api/messages/create',
     },
     LINK: {
@@ -25,5 +27,9 @@ export const COMMON_CONSTANTS = {
         ROOM: {
             ERROR_CREATE: 'チャットルームの作成に失敗しました',
         },
+    },
+    WEBSOCKET: {
+        ERROR_CONNECT: 'WebSocket 接続に失敗しました',
+        ERROR_DISCONNECT: 'WebSocket 接続が解除されました',
     },
 };

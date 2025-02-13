@@ -19,9 +19,9 @@ export async function createRoom(createdData: RoomCreateFormValues) {
 
         const response = await fetch(`${COMMON_CONSTANTS.URL.CREATE_ROOM}`, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                Authorization: `Bearer ${token}`,
             },
             credentials: 'include',
             body: JSON.stringify({
