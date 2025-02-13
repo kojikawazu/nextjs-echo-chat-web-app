@@ -69,11 +69,9 @@ export const ChatRoom: React.FC = () => {
         };
 
         ws.current.onmessage = (event) => {
-            console.log(COMMON_CONSTANTS.WEBSOCKET.RECEIVED);
             try {
                 const data = JSON.parse(event.data);
                 if (data.type === "message") {
-                    const data = JSON.parse(event.data);
                     const receivedMessage: RoomMessage = {
                         user_id: data.data.user_id,
                         message_id: data.data.message_id,
