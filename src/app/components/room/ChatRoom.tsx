@@ -75,13 +75,13 @@ export const ChatRoom: React.FC = () => {
                 if (data.type === "message") {
                     const data = JSON.parse(event.data);
                     const receivedMessage: RoomMessage = {
-                        user_id: data.user_id,
-                        message_id: data.message_id,
-                        name: data.name,
-                        content: data.content,
-                        created_at: data.created_at,
-                        like_count: data.like_count,
-                        liked_users: data.liked_users,
+                        user_id: data.data.user_id,
+                        message_id: data.data.message_id,
+                        name: data.data.name,
+                        content: data.data.content,
+                        created_at: data.data.created_at,
+                        like_count: 0,
+                        liked_users: [],
                     };
                     setMessages((prev) => [...prev, receivedMessage]);
                 }
