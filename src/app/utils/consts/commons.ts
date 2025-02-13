@@ -7,6 +7,8 @@ export const COMMON_CONSTANTS = {
         CREATE_MESSAGE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages',
         CREATE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
         DELETE_LIKE: process.env.NEXT_PUBLIC_BACKEND_URL + '/api/messages/:id/likes',
+
+        API_MESSAGE_CREATE: '/api/messages/create',
     },
     LINK: {
         SIGN_IN: '/sign-in',
