@@ -3,6 +3,8 @@
 import { auth } from '@clerk/nextjs/server';
 // constants
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
+// utils
+import { encrypt } from '@/app/utils/encrypt/encrypt';
 
 /**
  * チャットメッセージリストを取得
@@ -15,8 +17,11 @@ export async function fetchMessages(roomId: string) {
         const { getToken } = await auth();
         const token = await getToken();
 
+        // roomId を暗号化
+        const encryptedRoomId = await encrypt(roomId);
+
         const response = await fetch(
-            `${COMMON_CONSTANTS.URL.FETCH_MESSAGES.replace(':id', roomId)}`,
+            `${COMMON_CONSTANTS.URL.FETCH_MESSAGES.replace(':id', encryptedRoomId)}`,
             {
                 method: 'GET',
                 headers: {
