@@ -68,3 +68,15 @@ variable "clerk_after_sign_in_url" {
 variable "clerk_after_sign_up_url" {
   type = string
 }
+
+variable "algo" {
+  type = string
+}
+
+variable "secret_key" {
+  type = string
+}
+
+variable "iv_length" {
+  type = number
+}

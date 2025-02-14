@@ -53,6 +53,18 @@ resource "google_cloud_run_service" "nextjs_echo_chat_app_service" {
           name  = "CLERK_SECRET_KEY"
           value = var.clerk_secret_key
         }
+        env {
+          name  = "ALGORITHM"
+          value = var.algo
+        }
+        env {
+          name  = "SECRET_KEY"
+          value = var.secret_key
+        }
+        env {
+          name  = "IV_LENGTH"
+          value = var.iv_length
+        }
       }
       service_account_name = google_service_account.cloud_run_sa.email
     }

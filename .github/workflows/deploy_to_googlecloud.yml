@@ -31,6 +31,9 @@ jobs:
                   echo NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }} >> .env
                   echo NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL }} >> .env
                   echo NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL }} >> .env
+                  echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env
+                  echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+                  echo IV_LENGTH=${{ secrets.IV_LENGTH }} >> .env
 
             - name: Setup Google Cloud SDK
               uses: google-github-actions/setup-gcloud@v1
