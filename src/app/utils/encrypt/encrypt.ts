@@ -26,12 +26,18 @@ export async function encrypt(text: string): Promise<string> {
     // `IV` を生成
     const iv = crypto.randomBytes(parseInt(IV_LENGTH));
     // `Cipher` を生成
-    const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(SECRET_KEY, "utf-8"), iv) as crypto.CipherGCM;
+    const cipher = crypto.createCipheriv(
+        ALGORITHM,
+        Buffer.from(SECRET_KEY, 'utf-8'),
+        iv,
+    ) as crypto.CipherGCM;
     // `Cipher` を暗号化
-    let encrypted = Buffer.concat([cipher.update(text, "utf-8"), cipher.final()]);
+    let encrypted = Buffer.concat([cipher.update(text, 'utf-8'), cipher.final()]);
     // `authTag` を取得
     const authTag = cipher.getAuthTag();
 
     // `IV:暗号文:認証タグ` を URL エンコード
-    return encodeURIComponent(`${iv.toString("hex")}:${encrypted.toString("base64")}:${authTag.toString("hex")}`);
+    return encodeURIComponent(
+        `${iv.toString('hex')}:${encrypted.toString('base64')}:${authTag.toString('hex')}`,
+    );
 }
