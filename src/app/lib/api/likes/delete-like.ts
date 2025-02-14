@@ -3,6 +3,8 @@
 import { auth } from '@clerk/nextjs/server';
 // constants
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
+// utils
+import { encrypt } from '@/app/utils/encrypt/encrypt';
 
 /**
  * いいねを削除
@@ -15,13 +17,19 @@ export async function deleteLike(id: string) {
         const { getToken } = await auth();
         const token = await getToken();
 
-        const response = await fetch(`${COMMON_CONSTANTS.URL.DELETE_LIKE.replace(':id', id)}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+        // id を暗号化
+        const encryptedId = await encrypt(id);
+
+        const response = await fetch(
+            `${COMMON_CONSTANTS.URL.DELETE_LIKE.replace(':id', encryptedId)}`,
+            {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
             },
-        });
+        );
 
         if (!response.ok) {
             throw new Error(COMMON_CONSTANTS.MESSAGES.LIKE.ERROR_DELETE);
