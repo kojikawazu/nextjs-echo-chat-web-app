@@ -30,6 +30,10 @@ resource "google_cloud_run_service" "nextjs_echo_chat_app_service" {
           value = var.backend_url
         }
         env {
+          name  = "NEXT_PUBLIC_WEBSOCKET_URL"
+          value = var.websocket_url
+        }
+        env {
           name  = "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"
           value = var.clerk_publishable_key
         }
