@@ -80,3 +80,7 @@ variable "secret_key" {
 variable "iv_length" {
   type = number
 }
+
+variable "domain_name" {
+  type = string
+}
