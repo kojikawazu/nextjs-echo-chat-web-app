@@ -34,6 +34,7 @@ jobs:
                   echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env
                   echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
                   echo IV_LENGTH=${{ secrets.IV_LENGTH }} >> .env
+                  echo NEXT_PUBLIC_WEBSOCKET_URL=${{ secrets.NEXT_PUBLIC_WEBSOCKET_URL }} >> .env
 
             - name: Setup Google Cloud SDK
               uses: google-github-actions/setup-gcloud@v1

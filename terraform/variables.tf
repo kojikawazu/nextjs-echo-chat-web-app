@@ -33,6 +33,10 @@ variable "backend_url" {
   type = string
 }
 
+variable "websocket_url" {
+  type = string
+}
+
 variable "service_name" {
   type = string
 }
