@@ -28,6 +28,7 @@
 [![Bolt](https://img.shields.io/badge/-Bolt-000000?style=flat-square&logo=bolt&logoColor=white)](https://bolt.new/)
 [![Clerk](https://img.shields.io/badge/-Clerk-000000?style=flat-square&logo=clerk&logoColor=white)](https://clerk.com/)
 [![WebSocket](https://img.shields.io/badge/-WebSocket-000000?style=flat-square&logo=websocket&logoColor=white)](https://developer.mozilla.org/ja/docs/Web/API/WebSocket)
+[![Playwright](https://img.shields.io/badge/-Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white)](https://playwright.dev/)
 
 ## Architecture
 
