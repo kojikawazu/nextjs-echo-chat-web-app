@@ -48,5 +48,9 @@ terraform/terraform.tfstate
 terraform/.terraform.tfstate.lock.info
 terraform/terraform.tfstate.backup
 
+# reports
+jest-report/
+playwright-report/
+
 # Other
 private/
