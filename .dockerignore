@@ -1,3 +1,9 @@
-terraform/
-private/
+.github/
+architecture/
+e2e/
 manuals/
+node_modules/
+playwright-report/
+private/
+terraform/
+test-results/
