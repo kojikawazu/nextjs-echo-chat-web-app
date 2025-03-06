@@ -1,0 +1,57 @@
+name: Test Workflow
+
+on:
+  workflow_call:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test_dir: [
+          e2e/tests/pages/sample/*,
+        ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+      - name: Create .env.test file
+        run: |
+          echo NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }} >> .env.test
+          echo NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }} >> .env.test
+          echo CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }} >> .env.test
+          echo NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }} >> .env.test
+          echo NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }} >> .env.test
+          echo NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL }} >> .env.test
+          echo NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL }} >> .env.test
+          echo ALGORITHM=${{ secrets.ALGORITHM }} >> .env.test
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env.test
+          echo IV_LENGTH=${{ secrets.IV_LENGTH }} >> .env.test
+          echo NEXT_PUBLIC_WEBSOCKET_URL=${{ secrets.NEXT_PUBLIC_WEBSOCKET_URL }} >> .env.test
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright e2e tests
+        run: npm run test:e2e -- ${{ matrix.test_dir }}
+
+      - name: Generate valid artifact name
+        run: echo "ARTIFACT_NAME=$(echo '${{ matrix.test_dir }}' | sed 's|/\*$||' | sed 's|/|-|g')" >> $GITHUB_ENV
+
+      - name: Save Playwright HTML Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ env.ARTIFACT_NAME }}
+          path: playwright-report/
+
+      - name: Remove .env.test file
+        if: always()
+        run: rm .env.test
