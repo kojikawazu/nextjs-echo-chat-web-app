@@ -33,7 +33,7 @@ export const Header: React.FC = () => {
                         <button
                             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-dark-300 transition-colors duration-200"
-                            aria-label="ダークモード切り替え"
+                            aria-label={theme === 'dark' ? 'ライトモード' : 'ダークモード'}
                         >
                             {theme === 'dark' ? (
                                 <Sun className="h-5 w-5 text-gray-600 dark:text-gray-300" />
