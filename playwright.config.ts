@@ -12,6 +12,20 @@ export default defineConfig({
     reporter: [['html', { outputFolder: 'playwright-report' }]],
     // テストのタイムアウト
     timeout: 30000,
+    projects: [
+        {
+            name: 'authenticated',
+            use: {
+                storageState: 'storageState.json', // 認証済みの状態
+            },
+        },
+        {
+            name: 'unauthenticated',
+            use: {
+                storageState: undefined, // 未認証の状態
+            },
+        },
+    ],
     // テストの実行環境
     use: {
         // テストの実行環境のベースURL

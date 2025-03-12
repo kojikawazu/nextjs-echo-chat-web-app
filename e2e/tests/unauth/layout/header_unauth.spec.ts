@@ -13,7 +13,7 @@ test.describe('Unauthenticated Header', () => {
         await expect(page.getByRole('heading', { name: 'チャットアプリ' })).toBeVisible();
 
         // ダークモードのボタンが表示されていることを確認
-        await expect(page.getByRole('button', { name: 'ダークモード' })).toBeVisible();        
+        await expect(page.getByRole('button', { name: 'ダークモード' })).toBeVisible();
     });
 
     test('Dark mode button is displayed', async ({ page }) => {

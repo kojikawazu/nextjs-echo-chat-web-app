@@ -54,3 +54,5 @@ playwright-report/
 
 # Other
 private/
+screenshot.png
+storageState.json

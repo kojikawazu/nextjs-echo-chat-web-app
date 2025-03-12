@@ -7,9 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        test_dir: [
-          e2e/tests/pages/sample/*,
-        ]
+        include:
+          - test_dir: 'e2e/tests/unauth/*'
+            storage_state: ''
+          - test_dir: 'e2e/tests/auth/*'
+            storage_state: storageState.json
 
     steps:
       - uses: actions/checkout@v3
@@ -32,6 +34,11 @@ jobs:
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env.test
           echo IV_LENGTH=${{ secrets.IV_LENGTH }} >> .env.test
           echo NEXT_PUBLIC_WEBSOCKET_URL=${{ secrets.NEXT_PUBLIC_WEBSOCKET_URL }} >> .env.test
+          echo TEST_USER_NAME=${{ secrets.TEST_USER_NAME }} >> .env.test
+
+      - name: Restore storageState.json from GitHub Secret
+        run: |
+          echo '${{ secrets.STORAGE_STATE }}' > storageState.json
 
       - name: Install dependencies
         run: npm install
@@ -39,8 +46,13 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright e2e tests
-        run: npm run test:e2e -- ${{ matrix.test_dir }}
+      - name: Run Playwright tests (auth)
+        if: matrix.storage_state
+        run: npm run test:e2e:auth -- ${{ matrix.test_dir }}
+
+      - name: Run Playwright tests (unauth)
+        if: '!matrix.storage_state'
+        run: npm run test:e2e:unauth -- ${{ matrix.test_dir }}
 
       - name: Generate valid artifact name
         run: echo "ARTIFACT_NAME=$(echo '${{ matrix.test_dir }}' | sed 's|/\*$||' | sed 's|/|-|g')" >> $GITHUB_ENV

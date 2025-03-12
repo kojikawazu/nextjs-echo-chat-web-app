@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Footer', () => {
     test.beforeEach(async ({ page }) => {
-        // 未認証の場合、ログインページにリダイレクトされる
         await page.goto('/');
         // 1000ms待機
         await page.waitForTimeout(1000);
