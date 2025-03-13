@@ -5,18 +5,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - test_dir: 'e2e/tests/unauth/*'
-            storage_state: ''
-          - test_dir: 'e2e/tests/login/*'
-            storage_state: ''
-          - test_dir: 'e2e/tests/auth/*'
-            storage_state: storageState.json
-          - test_dir: 'e2e/tests/logout/*'
-            storage_state: storageState.json
-
     steps:
       - uses: actions/checkout@v3
 
@@ -55,29 +43,43 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests (unauth)
-        if: ${{ matrix.test_dir == 'e2e/tests/unauth/*' }}
         run: npm run test:e2e:unauth
 
-      - name: Run Playwright tests (login)
-        if: ${{ matrix.test_dir == 'e2e/tests/login/*' }}
-        run: npm run test:e2e:login
-
-      - name: Run Playwright tests (auth)
-        if: ${{ matrix.test_dir == 'e2e/tests/auth/*' }}
-        run: npm run test:e2e:auth
-
-      - name: Run Playwright tests (logout)
-        if: ${{ matrix.test_dir == 'e2e/tests/logout/*' }}
-        run: npm run test:e2e:logout
-
-      - name: Generate valid artifact name
-        run: echo "ARTIFACT_NAME=$(echo '${{ matrix.test_dir }}' | sed 's|/\*$||' | sed 's|/|-|g')" >> $GITHUB_ENV
-
-      - name: Save Playwright HTML Report
+      - name: Save Playwright HTML Report (unauth)
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ env.ARTIFACT_NAME }}
+          name: playwright-report-unauth
+          path: playwright-report/
+
+      - name: Run Playwright tests (login)
+        run: npm run test:e2e:login
+
+      - name: Save Playwright HTML Report (login)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-login
+          path: playwright-report/
+
+      - name: Run Playwright tests (auth)
+        run: npm run test:e2e:auth
+
+      - name: Save Playwright HTML Report (auth)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-auth
+          path: playwright-report/
+
+      - name: Run Playwright tests (logout)
+        run: npm run test:e2e:logout
+
+      - name: Save Playwright HTML Report (logout)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-logout
           path: playwright-report/
 
       - name: Remove .env.test file
