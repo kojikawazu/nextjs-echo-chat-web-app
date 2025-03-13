@@ -3,12 +3,17 @@
 import { auth } from '@clerk/nextjs/server';
 // constants
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
+import { mockRooms } from '../../../../../e2e/tests/auth/mocks/data/mock-room-data';
 
 /**
  * チャットルームリストを取得
  * @returns チャットルーム
  */
 export async function fetchRooms() {
+    if (process.env.TEST_NODE_ENV === 'test') {
+        return mockRooms;
+    }
+
     try {
         // トークンを取得
         const { getToken } = await auth();

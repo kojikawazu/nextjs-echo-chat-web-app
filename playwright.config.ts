@@ -4,14 +4,42 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.test' });
 
 export default defineConfig({
-    // テストファイルのディレクトリ
-    testDir: './e2e/tests',
     // テストの実行回数
     retries: process.env.CI ? 2 : 0,
     // テストの実行結果のレポート
     reporter: [['html', { outputFolder: 'playwright-report' }]],
     // テストのタイムアウト
     timeout: 30000,
+    projects: [
+        {
+            name: 'authenticated',
+            use: {
+                storageState: 'storageState.json',
+            },
+            testDir: './e2e/tests/auth',
+        },
+        {
+            name: 'unauthenticated',
+            use: {
+                storageState: undefined,
+            },
+            testDir: './e2e/tests/unauth',
+        },
+        {
+            name: 'login',
+            use: {
+                storageState: undefined,
+            },
+            testDir: './e2e/tests/login',
+        },
+        {
+            name: 'logout',
+            use: {
+                storageState: 'storageState.json',
+            },
+            testDir: './e2e/tests/logout',
+        },
+    ],
     // テストの実行環境
     use: {
         // テストの実行環境のベースURL

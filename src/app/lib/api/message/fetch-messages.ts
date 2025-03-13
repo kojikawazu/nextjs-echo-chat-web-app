@@ -5,6 +5,8 @@ import { auth } from '@clerk/nextjs/server';
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 // utils
 import { encrypt } from '@/app/utils/encrypt/encrypt';
+// mocks
+import { mockMessages } from '../../../../../e2e/tests/auth/mocks/data/mock-message-data';
 
 /**
  * チャットメッセージリストを取得
@@ -12,6 +14,10 @@ import { encrypt } from '@/app/utils/encrypt/encrypt';
  * @returns チャットメッセージ
  */
 export async function fetchMessages(roomId: string) {
+    if (process.env.TEST_NODE_ENV === 'test') {
+        return mockMessages;
+    }
+
     try {
         // トークンを取得
         const { getToken } = await auth();
