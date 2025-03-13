@@ -4,8 +4,6 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.test' });
 
 export default defineConfig({
-    // テストファイルのディレクトリ
-    testDir: './e2e/tests',
     // テストの実行回数
     retries: process.env.CI ? 2 : 0,
     // テストの実行結果のレポート
@@ -16,14 +14,30 @@ export default defineConfig({
         {
             name: 'authenticated',
             use: {
-                storageState: 'storageState.json', // 認証済みの状態
+                storageState: 'storageState.json',
             },
+            testDir: './e2e/tests/auth',
         },
         {
             name: 'unauthenticated',
             use: {
-                storageState: undefined, // 未認証の状態
+                storageState: undefined,
             },
+            testDir: './e2e/tests/unauth',
+        },
+        {
+            name: 'login',
+            use: {
+                storageState: undefined,
+            },
+            testDir: './e2e/tests/login',
+        },
+        {
+            name: 'logout',
+            use: {
+                storageState: 'storageState.json',
+            },
+            testDir: './e2e/tests/logout',
         },
     ],
     // テストの実行環境

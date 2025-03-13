@@ -1,14 +1,8 @@
-import { test, expect } from '@playwright/test';
-
-test.describe('Authentication Header', () => {
-    test.beforeEach(async ({ page, context }) => {
-        // 認証済みテストの場合は storageState.json を適用ß
-        if (await context.storageState()) {
-            console.log('認証済みテスト（storageState.json が適用されています）');
-        }
-    });
-
+import { expect, test } from '@playwright/test';
+        
+test.describe('Authentication Header (login)', () => {
     test('Authentication Header test', async ({ page }) => {
+        // チャットページに移動
         await page.goto('/');
 
         // 認証処理が完了するまで待機

@@ -12,6 +12,8 @@
     "test:e2e": "playwright test --reporter=html",
     "test:e2e:auth": "playwright test --reporter=html --project=authenticated",
     "test:e2e:unauth": "playwright test --reporter=html --project=unauthenticated",
+    "test:e2e:login": "playwright test --reporter=html --project=login",
+    "test:e2e:logout": "playwright test --reporter=html --project=logout",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed"
   },

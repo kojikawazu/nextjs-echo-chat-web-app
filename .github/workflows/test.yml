@@ -10,7 +10,11 @@ jobs:
         include:
           - test_dir: 'e2e/tests/unauth/*'
             storage_state: ''
+          - test_dir: 'e2e/tests/login/*'
+            storage_state: ''
           - test_dir: 'e2e/tests/auth/*'
+            storage_state: storageState.json
+          - test_dir: 'e2e/tests/logout/*'
             storage_state: storageState.json
 
     steps:
@@ -34,11 +38,15 @@ jobs:
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env.test
           echo IV_LENGTH=${{ secrets.IV_LENGTH }} >> .env.test
           echo NEXT_PUBLIC_WEBSOCKET_URL=${{ secrets.NEXT_PUBLIC_WEBSOCKET_URL }} >> .env.test
+          echo TEST_USER_ID=${{ secrets.TEST_USER_ID }} >> .env.test
           echo TEST_USER_NAME=${{ secrets.TEST_USER_NAME }} >> .env.test
+          echo TEST_USER_EMAIL=${{ secrets.TEST_USER_EMAIL }} >> .env.test
+          echo TEST_USER_PASSWORD=${{ secrets.TEST_USER_PASSWORD }} >> .env.test
+          echo TEST_NODE_ENV=${{ secrets.TEST_NODE_ENV }} >> .env.test
 
-      - name: Restore storageState.json from GitHub Secret
-        run: |
-          echo '${{ secrets.STORAGE_STATE }}' > storageState.json
+      # - name: Restore storageState.json from GitHub Secret
+      #   run: |
+      #     echo '${{ secrets.STORAGE_STATE }}' > storageState.json
 
       - name: Install dependencies
         run: npm install
@@ -46,13 +54,21 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright tests (auth)
-        if: matrix.storage_state
-        run: npm run test:e2e:auth -- ${{ matrix.test_dir }}
-
       - name: Run Playwright tests (unauth)
-        if: '!matrix.storage_state'
-        run: npm run test:e2e:unauth -- ${{ matrix.test_dir }}
+        if: ${{ matrix.test_dir == 'e2e/tests/unauth/*' }}
+        run: npm run test:e2e:unauth
+
+      - name: Run Playwright tests (login)
+        if: ${{ matrix.test_dir == 'e2e/tests/login/*' }}
+        run: npm run test:e2e:login
+
+      - name: Run Playwright tests (auth)
+        if: ${{ matrix.test_dir == 'e2e/tests/auth/*' }}
+        run: npm run test:e2e:auth
+
+      - name: Run Playwright tests (logout)
+        if: ${{ matrix.test_dir == 'e2e/tests/logout/*' }}
+        run: npm run test:e2e:logout
 
       - name: Generate valid artifact name
         run: echo "ARTIFACT_NAME=$(echo '${{ matrix.test_dir }}' | sed 's|/\*$||' | sed 's|/|-|g')" >> $GITHUB_ENV
@@ -67,3 +83,7 @@ jobs:
       - name: Remove .env.test file
         if: always()
         run: rm .env.test
+
+      - name: Remove storageState.json file
+        if: always()
+        run: rm storageState.json
