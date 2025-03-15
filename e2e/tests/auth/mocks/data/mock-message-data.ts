@@ -1,4 +1,4 @@
-import { RoomMessage } from "@/app/types/types";
+import { RoomMessage } from '@/app/types/types';
 
 /**
  * チャットメッセージデータ(Mock)
@@ -19,14 +19,14 @@ export const mockMessages: RoomMessage[] = [
             {
                 userId: 'user-3',
                 name: 'Tom Hanks',
-            }
+            },
         ],
     },
     {
         user_id: 'user-2',
         message_id: 'message-2',
         name: 'Jane Doe',
-        content: 'Hello, world!',
+        content: 'Thank you!',
         created_at: new Date(),
         like_count: 1,
         liked_users: [

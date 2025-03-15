@@ -5,6 +5,8 @@ import { auth } from '@clerk/nextjs/server';
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 // schema
 import { ChatMessageCreateFormValues } from '@/app/schema/chat-message-schema';
+// mocks
+import { mockMessages } from '../../../../../e2e/tests/auth/mocks/data/mock-message-data';
 
 /**
  * チャットメッセージを作成
@@ -12,6 +14,10 @@ import { ChatMessageCreateFormValues } from '@/app/schema/chat-message-schema';
  * @returns 作成データ
  */
 export async function createMessage(createdData: ChatMessageCreateFormValues) {
+    if (process.env.TEST_NODE_ENV === 'test') {
+        return mockMessages;
+    }
+
     try {
         // トークンを取得
         const { getToken } = await auth();

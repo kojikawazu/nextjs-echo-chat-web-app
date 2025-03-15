@@ -5,6 +5,8 @@ import { auth } from '@clerk/nextjs/server';
 import { COMMON_CONSTANTS } from '@/app/utils/consts/commons';
 // schema
 import { RoomCreateFormValues } from '@/app/schema/chat-room-schema';
+// mocks
+import { mockRooms } from '../../../../../e2e/tests/auth/mocks/data/mock-room-data';
 
 /**
  * チャットルームを作成
@@ -12,6 +14,10 @@ import { RoomCreateFormValues } from '@/app/schema/chat-room-schema';
  * @returns 作成データ
  */
 export async function createRoom(createdData: RoomCreateFormValues) {
+    if (process.env.TEST_NODE_ENV === 'test') {
+        return mockRooms;
+    }
+
     try {
         // トークンを取得
         const { getToken } = await auth();

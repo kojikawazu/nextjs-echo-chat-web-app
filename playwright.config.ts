@@ -28,7 +28,7 @@ export default defineConfig({
         {
             name: 'login',
             use: {
-                storageState: undefined,
+                storageState: 'storageState.json',
             },
             testDir: './e2e/tests/login',
         },

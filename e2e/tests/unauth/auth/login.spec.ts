@@ -10,6 +10,9 @@ test.describe('Login page', () => {
 
     // ログインページのe2eテスト
     test('Login page is displayed', async ({ page }) => {
+        // ログインページにリダイレクトされていることを確認
+        await expect(page).toHaveURL(/.*sign-in.*/);
+
         // フォーム内の見出しをチェック
         await expect(
             page.getByRole('heading', { name: 'Sign in to nextjs-echo-chat-app' }),
