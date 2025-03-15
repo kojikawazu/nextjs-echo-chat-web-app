@@ -79,6 +79,7 @@ export const MessageButton: React.FC<MessageButtonProps> = ({ initialMessage, is
                                     ? `いいねしたユーザー: ${likedUsers.join(', ')}`
                                     : ''
                             }
+                            aria-label={hasLiked ? 'いいね解除' : 'いいね'}
                         >
                             <Heart
                                 className={`h-4 w-4 ${hasLiked ? 'fill-current text-red-500' : ''} transition-colors duration-200`}

@@ -208,10 +208,10 @@ export const ChatRoom: React.FC = () => {
                 className="p-4 bg-white dark:bg-dark-200 border-t border-gray-200 dark:border-dark-300 transition-colors duration-200"
                 onSubmit={handleSubmit(handleCreateMessage)}
             >
+                {errors.message && (
+                    <p className="text-red-500 text-sm mb-2">{errors.message.message}</p>
+                )}
                 <div className="flex space-x-2">
-                    {errors.message && (
-                        <p className="text-red-500 text-sm">{errors.message.message}</p>
-                    )}
                     <input
                         type="text"
                         id="message"
@@ -225,6 +225,7 @@ export const ChatRoom: React.FC = () => {
                         type="submit"
                         className="px-4 py-2 bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-dark-200 transition-colors duration-200"
                         disabled={isCreating}
+                        aria-label="メッセージ送信"
                     >
                         <Send className="h-5 w-5" />
                     </button>

@@ -72,6 +72,7 @@ export const RoomList: React.FC = () => {
                         <button
                             type="submit"
                             className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-dark-300 text-gray-600 dark:text-gray-300"
+                            aria-label="部屋作成"
                         >
                             <Plus className="h-5 w-5" />
                         </button>

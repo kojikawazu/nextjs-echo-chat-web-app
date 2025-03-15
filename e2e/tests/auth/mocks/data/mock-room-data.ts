@@ -1,4 +1,4 @@
-import { ChatRoom } from "@/app/types/types";
+import { ChatRoom } from '@/app/types/types';
 
 /**
  * チャットルームデータ(Mock)
@@ -10,7 +10,7 @@ export const mockRooms: ChatRoom[] = [
         createdAt: new Date(),
         updatedAt: new Date(),
         users: [
-            { id: process.env.TEST_USER_ID || '', name: process.env.TEST_USER_NAME || ''},
+            { id: process.env.TEST_USER_ID || '', name: process.env.TEST_USER_NAME || '' },
             { id: 'user-2', name: 'Jane Doe' },
         ],
     },
