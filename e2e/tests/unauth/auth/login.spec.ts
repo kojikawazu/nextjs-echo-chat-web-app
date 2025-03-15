@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+const storageStatePath = 'storageState.json';
+
 test.describe('Login page', () => {
     test.beforeEach(async ({ page }) => {
         // 未認証の場合、ログインページにリダイレクトされる
@@ -9,7 +11,7 @@ test.describe('Login page', () => {
     });
 
     // ログインページのe2eテスト
-    test('Login page is displayed', async ({ page }) => {
+    test('Login page is displayed', async ({ page, context }) => {
         // ログインページにリダイレクトされていることを確認
         await expect(page).toHaveURL(/.*sign-in.*/);
 
@@ -22,5 +24,8 @@ test.describe('Login page', () => {
         await expect(page.getByText('Email address')).toBeVisible();
         // フォーム内のボタンをチェック
         await expect(page.getByRole('button', { name: /Continue/ })).toBeVisible();
+
+        // 認証状態を `storageState.json` に保存
+        await context.storageState({ path: storageStatePath });
     });
 });
